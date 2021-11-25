@@ -169,4 +169,4 @@
 
         Digite o código de identicação do item desejado:
         1
-O item está: DANIFICADO
+        O item está: DANIFICADO
