@@ -1,9 +1,8 @@
 package Principal;
 
-import java.util.Date;
+import java.lang.Comparable;
+import java.util.Comparator;
 import java.util.*;
-import java.time.LocalDate;
-import java.lang.NumberFormatException;
 
 import Amigo.*;
 import Emprestimo.*;
@@ -18,13 +17,9 @@ public class Principal {
     private static Scanner teclado = new Scanner(System.in);
 
     public static void main(String[] args) {
-        // apenas alguns exemplos de manipulação em relação a amigos
-        // da mesma forma faz com biv e emprestimos
-        // criando funções static na main para implementar as opções do menu
-
         int opcao;
-
         int idAmigo;
+
         idAmigo = amigos.addAmigo("Fulano");
         System.out.println("Adicionado com código " + idAmigo);
 
@@ -37,7 +32,7 @@ public class Principal {
         }
         try {
             do {
-                System.out.println("\n=======MENU=======");
+                System.out.println("\n======= MENU =======");
                 System.out.println("\nOpção: ");
                 System.out.println("0 - Sair\n" +
                         "1 - Cadastrar item\n" +
@@ -67,16 +62,15 @@ public class Principal {
                         Devolver();
                         break;
                     case 5:
-                        EmprestimosAtuais();//n ta printatando
+                        EmprestimosAtuais();
                         break;
                     case 6:
                         HistoricoEmprestimos();
                         break;
-                    case 7: //listar biblioteca
-                        itens.getListaItens();
+                    case 7:
+                        ListarBiblioteca();
                         break;
-
-                    case 8: //alterar estado
+                    case 8:
                         AlterarEstado();
                         break;
 
@@ -101,8 +95,8 @@ public class Principal {
         try {
             System.out.println("Tipo de item");
             System.out.println("1- Livro\n" +
-                               "2- Jogo \n" +
-                               "3- Filme\n");
+                    "2- Jogo \n" +
+                    "3- Filme\n");
             opcao = teclado.nextInt();
             System.out.println("Titulo");
             titulo = teclado.next();
@@ -113,12 +107,12 @@ public class Principal {
             switch (opcao) {
                 case 1:
                     String autor;
-                    int pag;
                     try {
                         System.out.println("Autor");
-                        autor = teclado.nextLine();
+                        autor = teclado.next();
                         System.out.println("Número de páginas");
-                        pag = teclado.nextInt();
+                        String input = teclado.next();
+                        int pag = Integer.valueOf(input);
                         Livro l = new Livro(idItem, titulo, dataDeLancamento, autor, pag);
                         itens.addItem(l);
                         System.out.println("Item cadastratrado com sucesso");
@@ -132,7 +126,7 @@ public class Principal {
                     System.out.println("Estudio: ");
                     estudio = teclado.next();
                     System.out.println("Plataforma: ");
-                    plataforma = teclado.nextLine();
+                    plataforma = teclado.next();
 
                     Jogo j = new Jogo(idItem, titulo, dataDeLancamento, estudio, plataforma);
                     itens.addItem(j);
@@ -146,7 +140,6 @@ public class Principal {
                     Filme F = new Filme(idItem, titulo, dataDeLancamento, Genero);
                     itens.addItem(F);
                     System.out.println("Item cadastratrado com sucesso");
-                    System.out.println("IdItem: " + idItem);
                     break;
                 default:
                     System.out.println("Opção inexidente");
@@ -165,14 +158,13 @@ public class Principal {
         Amigo amigo;
         String nome;
         int id = amigos.getAlAmigos().size() + 1;
-        ;
 
 
         System.out.println("Nome do amigo: ");
         nome = teclado.next();
         amigo = new Amigo(id, nome);
         amigos.addAmigo(nome);
-        System.out.println(nome + " adicionado com sucesso!! " + id);
+        System.out.print(nome + " adicionado com sucesso!!\n" + "Id Amigo:" + id);
     }
 
     public static void Emprestar() {
@@ -190,18 +182,18 @@ public class Principal {
             if (amigo.toUpperCase().equals(a.getNomeAmigo().toUpperCase())) {
                 achouAmigo = true;
                 System.out.println("\n\n=============================== Itens cadastrados ==============================");
-             for (Item it : itens.getListaItens()){
-                System.out.println(it.toString());
-            }
+                for (Item it : itens.getListaItens()) {
+                    System.out.println(it.toString());
+                }
                 System.out.println("\n\nDigite o código de identicação do item desejado: ");
                 String input = teclado.next();
                 int idItem = Integer.valueOf(input);
                 for (Item it : itens.getAlItens()) {
                     if (idItem == it.getIdItem()) {
                         achouItem = true;
-                        if(it.getDispItem() == Disponibilidade.DISPONIVEL){
-            
-                             try {
+                        if (it.getDispItem() == Disponibilidade.DISPONIVEL) {
+
+                            try {
                                 System.out.println("Data de emprestimo: ");
                                 String datastring = teclado.next();
                                 Date DataEmprestimo = new Date(datastring);
@@ -210,12 +202,11 @@ public class Principal {
                                 emprestimos.addEmprestimo(em);
                                 it.setDispItem(Disponibilidade.EMPRESTADO);
                                 System.out.println("Item emprestado com sucesso!!");
-                                System.out.println("Titulo do item: " + it.getTituloItem());
                             } catch (InputMismatchException e) {
                                 System.out.println("ERRO!! A data deve ta no formato XX/XX/XXXX !");
                             }
-                        }else{
-                            System.out.println("O item está: " +it.getDispItem());
+                        } else {
+                            System.out.println("O item está: " + it.getDispItem());
                         }
                     }
                 }
@@ -282,7 +273,7 @@ public class Principal {
                             System.out.println("Nome: " + amigo.getNomeAmigo());
                             System.out.println("Emprestou: " + it.getTituloItem());
                             System.out.println("Data de emprestimo: " + em.getDataEmprestimoBr1());
-                        }else{
+                        } else {
                             System.out.println("Não possuimos nenhum item emprestado atualmete");
                         }
                     }
@@ -292,6 +283,7 @@ public class Principal {
     }
 
     private static void HistoricoEmprestimos() {
+        System.out.println("\n=======Historico de emprestimo======");
         for (Emprestimo em : emprestimos.getAlEmprestimos()) {
             for (Amigo amigo : amigos.getAlAmigos()) {
                 for (Item it : itens.getListaItens()) {
@@ -302,7 +294,7 @@ public class Principal {
                         if (it.getDispItem() == Disponibilidade.DISPONIVEL) {
                             System.out.println("Situação: Disponivel");
                         } else if (it.getDispItem() == Disponibilidade.EMPRESTADO) {
-                            System.out.println("Situação: Disponivel");
+                            System.out.println("Situação: Emprestado");
                             System.out.println("Data de devolução: " + em.getDataDevolucao());
                         }
                     }
@@ -313,37 +305,38 @@ public class Principal {
 
     private static void ListarBiblioteca() {
         System.out.println("\n=======Listagem da biblioteca=======");
-        for (int i = 0; i < itens.size(); i++) {
-            System.out.println(itens.getListaItens());
+        Collections.sort(itens.getListaItens());
+        for (Item it : itens.getListaItens()) {
+            System.out.println("Titulo: " + it.getTituloItem() + " Disponibilidade: " + it.getDispItem());
         }
     }
 
     private static void AlterarEstado() {
-        int id,opcao;
+        int id, opcao;
         boolean j = false;
         Scanner teclado = new Scanner(System.in);
-      
+
         System.out.println("\n\n=============================== Itens cadastrados ==============================");
-        for (Item it : itens.getListaItens()){
+        for (Item it : itens.getListaItens()) {
             System.out.println(it.toString());
         }
         System.out.println("\n\n:: Digite o numero de identicação do item desejado: ");
-        id = teclado.nextInt() -1;
-        if(id <= itens.size()){
+        id = teclado.nextInt() - 1;
+        if (id <= itens.size()) {
             for (Item it : itens.getListaItens()) {
-                if(id <= itens.size()){
+             
                     System.out.println("Digite a opção de auteração de estado desejada");
                     System.out.println("1 - Consultural\n" +
-                                       "2 - Danificado\n" +
-                                       "3 - Extravidado\n");
+                            "2 - Danificado\n" +
+                            "3 - Extravidado\n");
                     opcao = teclado.nextInt();
-                    switch(opcao){
+                    switch (opcao) {
                         case 1:
-                            if(it.getDispItem() == Disponibilidade.EMPRESTADO){
+                            if (it.getDispItem() == Disponibilidade.EMPRESTADO) {
                                 it.setDispItem(Disponibilidade.CONSULTALOCAL);
                                 j = true;
                                 break;
-                            }else{
+                            } else {
                                 System.out.println("Não foi possivel efetuar a mudança pois o item não esta emprestado");
                             }
                         case 2:
@@ -355,13 +348,14 @@ public class Principal {
                             j = true;
                             break;
                         default:
-                            System.out.println("Opção inexidente");
+                            System.out.println("Opção inexistente");
                             break;
-                    }if(j == true){
-                        System.out.println("Mudança efetuuada com sucesso");
                     }
-                }
+                    if (j == true) {
+                        System.out.println("Mudança efetuada com sucesso");
+                    }
+                
             }
-        }   
+        }
     }
 }
